@@ -3,13 +3,16 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { AlertTriangle, TrendingUp, Users, MapPin, Activity, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { AlertTriangle, TrendingUp, Users, MapPin, Activity, Shield, LogOut } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 import MapDashboard from '@/components/MapDashboard';
 import ComplaintForm from '@/components/ComplaintForm';
 import Leaderboard from '@/components/Leaderboard';
 import RealtimeStats from '@/components/RealtimeStats';
 
 const Index = () => {
+  const { user, signOut } = useAuth();
   const [activeComplaints, setActiveComplaints] = useState(342);
   const [resolvedToday, setResolvedToday] = useState(89);
   const [avgResponseTime, setAvgResponseTime] = useState('4.2 hrs');
@@ -23,6 +26,10 @@ const Index = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -42,13 +49,22 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                <Activity className="w-3 h-3 mr-1" />
-                Live Dashboard
-              </Badge>
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                Google Cloud AI Day 2025
-              </Badge>
+              <div className="hidden sm:flex items-center space-x-4">
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  <Activity className="w-3 h-3 mr-1" />
+                  Live Dashboard
+                </Badge>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  Google Cloud AI Day 2025
+                </Badge>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
+                <Button variant="outline" size="sm" onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Sign Out
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -146,7 +162,7 @@ const Index = () => {
               Built for Google Cloud Agentic AI Day 2025 • Managing City Data Overload Challenge
             </p>
             <p className="text-sm text-gray-500 mt-2">
-              Team SPNI_HTML • Powered by Gemini AI & Firebase
+              Team SPNI_HTML • Powered by Gemini AI & Supabase
             </p>
           </div>
         </div>
