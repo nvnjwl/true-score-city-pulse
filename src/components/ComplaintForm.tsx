@@ -10,6 +10,22 @@ import { Badge } from '@/components/ui/badge';
 import { Camera, MapPin, Send, Upload, Sparkles, CheckCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
+interface UploadedImage {
+  id: string;
+  name: string;
+  size: number;
+  url: string;
+}
+
+interface AIAnalysis {
+  category: string;
+  priority: string;
+  department: string;
+  similarIssues: number;
+  estimatedResolution: string;
+  confidence: number;
+}
+
 const ComplaintForm = () => {
   const [formData, setFormData] = useState({
     title: '',
@@ -21,8 +37,8 @@ const ComplaintForm = () => {
     contactPhone: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [aiAnalysis, setAiAnalysis] = useState(null);
-  const [uploadedImages, setUploadedImages] = useState([]);
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
 
   const categories = [
     'Waste Management',
@@ -39,7 +55,7 @@ const ComplaintForm = () => {
     'Building Permits'
   ];
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -60,9 +76,12 @@ const ComplaintForm = () => {
     }, 1500);
   };
 
-  const handleImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const newImages = files.map(file => ({
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+    
+    const filesArray = Array.from(files);
+    const newImages: UploadedImage[] = filesArray.map(file => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
       size: file.size,
@@ -76,7 +95,7 @@ const ComplaintForm = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
