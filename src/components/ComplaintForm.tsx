@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,8 +6,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Camera, MapPin, Send, Upload, Sparkles, CheckCircle } from 'lucide-react';
+import { Camera, MapPin, Send, Upload, Sparkles, CheckCircle, LogIn } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface UploadedImage {
   id: string;
@@ -27,6 +28,8 @@ interface AIAnalysis {
 }
 
 const ComplaintForm = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -97,6 +100,18 @@ const ComplaintForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if user is authenticated before submitting
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to submit a complaint. You'll be redirected to the login page.",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsSubmitting(true);
 
     // Simulate form submission
@@ -154,7 +169,14 @@ const ComplaintForm = () => {
               <Send className="w-5 h-5 text-blue-600" />
               <span>Report a Civic Issue</span>
             </CardTitle>
-            <p className="text-gray-600">Help us improve your city by reporting issues in your area</p>
+            <p className="text-gray-600">
+              Help us improve your city by reporting issues in your area
+              {!user && (
+                <span className="block text-sm text-orange-600 mt-1">
+                  Note: You'll need to sign in to submit your report
+                </span>
+              )}
+            </p>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -324,13 +346,34 @@ const ComplaintForm = () => {
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     <span>Processing...</span>
                   </div>
-                ) : (
+                ) : user ? (
                   <div className="flex items-center space-x-2">
                     <Send className="w-4 h-4" />
                     <span>Submit Complaint</span>
                   </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In to Submit</span>
+                  </div>
                 )}
               </Button>
+              
+              {!user && (
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    Don't have an account?{' '}
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="p-0 h-auto text-blue-600 hover:text-blue-700"
+                      onClick={() => navigate('/auth')}
+                    >
+                      Sign up here
+                    </Button>
+                  </p>
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

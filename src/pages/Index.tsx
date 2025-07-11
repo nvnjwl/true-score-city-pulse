@@ -4,15 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { AlertTriangle, TrendingUp, Users, MapPin, Activity, Shield, LogOut } from 'lucide-react';
+import { AlertTriangle, TrendingUp, Users, MapPin, Activity, Shield, LogOut, LogIn } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import MapDashboard from '@/components/MapDashboard';
 import ComplaintForm from '@/components/ComplaintForm';
 import Leaderboard from '@/components/Leaderboard';
 import RealtimeStats from '@/components/RealtimeStats';
 
 const Index = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
+  const navigate = useNavigate();
   const [activeComplaints, setActiveComplaints] = useState(342);
   const [resolvedToday, setResolvedToday] = useState(89);
   const [avgResponseTime, setAvgResponseTime] = useState('4.2 hrs');
@@ -29,6 +31,10 @@ const Index = () => {
 
   const handleSignOut = async () => {
     await signOut();
+  };
+
+  const handleSignIn = () => {
+    navigate('/auth');
   };
 
   return (
@@ -59,11 +65,22 @@ const Index = () => {
                 </Badge>
               </div>
               <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Welcome, {user?.email}</span>
-                <Button variant="outline" size="sm" onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4 mr-1" />
-                  Sign Out
-                </Button>
+                {!loading && (
+                  user ? (
+                    <>
+                      <span className="text-sm text-gray-600">Welcome, {user.email}</span>
+                      <Button variant="outline" size="sm" onClick={handleSignOut}>
+                        <LogOut className="w-4 h-4 mr-1" />
+                        Sign Out
+                      </Button>
+                    </>
+                  ) : (
+                    <Button variant="outline" size="sm" onClick={handleSignIn}>
+                      <LogIn className="w-4 h-4 mr-1" />
+                      Sign In
+                    </Button>
+                  )
+                )}
               </div>
             </div>
           </div>
