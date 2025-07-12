@@ -42,8 +42,8 @@ const Index = () => {
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row justify-between items-center py-4 sm:h-16">
+            <div className="flex items-center space-x-3 mb-2 sm:mb-0">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center">
                 <Shield className="w-6 h-6 text-white" />
               </div>
@@ -90,7 +90,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
           <Card className="bg-white shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-gray-600">Active Complaints</CardTitle>
@@ -138,7 +138,7 @@ const Index = () => {
 
         {/* Main Dashboard Tabs */}
         <Tabs defaultValue="map" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white shadow-sm">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full bg-white shadow-sm text-xs sm:text-sm">
             <TabsTrigger value="map" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
               Map Dashboard
             </TabsTrigger>
